@@ -1,8 +1,9 @@
-ThisBuild / version := "0.1.0-SNAPSHOT"
+version := "0.1"
 
-ThisBuild / scalaVersion := "2.13.10"
 
 val sparkVersion = "3.2.1"
+val scalaTestVersion = "3.2.3"
+
 
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-core" % sparkVersion,
@@ -10,13 +11,7 @@ libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-mllib" % sparkVersion,
   "org.apache.spark" %% "spark-sql-kafka-0-10" % sparkVersion,
   "mysql" % "mysql-connector-java" % "5.1.46" % "provided",
-  "co.theasi" %% "plotly" % "0.2.0"
+  "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
+  "io.spray" %% "spray-json" % "1.3.2"
 )
 
-//ThisBuild / libraryDependencies += "org.apache.spark" %% "spark-core" % "3.2.1"
-//ThisBuild / libraryDependencies += "org.apache.spark" %% "spark-sql" % "3.2.1" % "provided"
-
-lazy val root = (project in file("."))
-  .settings(
-    name := "wordle-final-project"
-  )
