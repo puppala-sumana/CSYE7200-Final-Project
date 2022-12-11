@@ -9,7 +9,7 @@ import org.apache.log4j.{Level, LogManager, Logger}
 import org.apache.spark.sql.catalyst.dsl.expressions.StringToAttributeConversionHelper
 import org.apache.spark.sql.expressions.Window
 
-object SparkStreamingTweets extends App{
+object StreamTweets extends App{
 
   Logger.getLogger(("org")).setLevel(Level.OFF)
   Logger.getLogger("akka").setLevel(Level.OFF)

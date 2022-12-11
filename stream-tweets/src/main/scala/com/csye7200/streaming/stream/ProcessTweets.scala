@@ -2,11 +2,10 @@
 import org.apache.spark.sql.{SparkSession, functions}
 import com.csye7200.streaming.DBProperties._
 
-import java.sql.{DriverManager, ResultSet}
-import org.apache.log4j.{Level, LogManager, Logger}
+import org.apache.log4j.{Level, Logger}
 import org.apache.spark.ml.clustering.BisectingKMeans
 import org.apache.spark.ml.evaluation.ClusteringEvaluator
-import org.apache.spark.sql.functions.{col, current_date, current_timestamp, date_sub, row_number, to_date, to_timestamp}
+import org.apache.spark.sql.functions.{col, current_date, row_number, to_date}
 import com.csye7200.streaming.ParseUtils._
 
 

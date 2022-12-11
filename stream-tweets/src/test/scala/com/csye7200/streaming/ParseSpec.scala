@@ -4,9 +4,8 @@ import org.apache.spark.sql.SparkSession
 import ParseUtils._
 import org.apache.spark.sql.functions.{col, current_date, to_date}
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.tagobjects.Slow
 import org.scalatest.{BeforeAndAfter, flatspec}
-import org.apache.log4j.{Level, LogManager, Logger}
+import org.apache.log4j.{Level, Logger}
 
 import scala.util.Try
 
@@ -24,16 +23,10 @@ class ParseSpec extends flatspec.AnyFlatSpec with Matchers with BeforeAndAfter {
         .getOrCreate()
       spark.sparkContext.setLogLevel("ERROR")
 
-//  import scala.io.{Codec, Source}
-//  val ingester = new Ingest[Response]()
-//  val codec = Codec.UTF8
-//  val source = Source.fromFile("src/main/resources/response.json")
-
-
   val path = "/home/sumana/CSYE7200-Final-Project/stream-tweets/src/main/resources/result.csv"
+
   val df = spark.read.option("header", true)
     .option("multiLine", true)
-//    .option("truncate", false)
     .option("ignoreTrailingWhiteSpace", true).csv(path)
 
   behavior of "Regex Transformations"
@@ -56,40 +49,35 @@ class ParseSpec extends flatspec.AnyFlatSpec with Matchers with BeforeAndAfter {
     val x = df.select(col("tweet")).withColumn("tweet", YReplace(col("tweet"))).take(3).last
     x.get(0).toString.charAt(17) shouldBe 'Y'
   }
-  it should "GReplace: regex check to replace yellow tiles with Y from tweet" in {
+  it should "GReplace: regex check to replace green tiles with G from tweet" in {
     val x = df.select(col("tweet")).withColumn("tweet", GReplace(col("tweet"))).take(5).last
     x.get(0).toString.charAt(25) shouldBe 'G'
   }
-  it should "BWReplace: regex check to replace yellow tiles with Y from tweet" in {
+  it should "BWReplace: regex check to replace white tiles with B from tweet" in {
     val x = df.select(col("tweet")).withColumn("tweet", BWReplace(col("tweet"))).take(3).last
-    println(x.get(0).toString)
     x.get(0).toString.charAt(16) shouldBe 'B'
   }
 
   behavior of "preProcessing"
 
-  it should "trim spaces for a given string" in {
-    val sampleString = "    ~@octobergloom Wordle 533 3/6   "
-    trimStringSeq(sampleString).size shouldBe 29
-  }
-  it should "check String size =30" in {
+  it should "udftrimStringSeq: trim spaces for a given string" in {
     val sampleString = "    ~@octobergloom Wordle 533 3/6   "
     trimStringSeq(sampleString).size shouldBe 29
   }
 
-  it should "fill tweet with size less than 30" in {
-    val sampleString = "    ~@octobergloom Wordle 533 3/6   "
-    trimStringSeq(sampleString).size shouldBe 29
+  val regexProcessed = df.select(col("tweet")).withColumn("tweet", BWReplace(GReplace(YReplace(extract(spaceRegex(col("tweet"))))))).take(9).last
+
+  it should "udfcheckStringSeqSize:filterSpec: check String size <=30" in {
+     checkStringSeqSize(regexProcessed.get(0).toString) shouldBe true
   }
 
-  it should "replace string formatted doubles to sequence of doubles" in {
-    val sampleString = "    ~@octobergloom Wordle 533 3/6   "
-    trimStringSeq(sampleString).size shouldBe 29
+  it should "udfFillTweet: fill tweet when size less than 30" in {
+    fillTweet(regexProcessed.get(0).toString).size shouldBe 30
   }
 
-  it should "convert a sequence of doubles to string" in {
-    val sampleString = "    ~@octobergloom Wordle 533 3/6   "
-    trimStringSeq(sampleString).size shouldBe 29
+  val soFar = trimStringSeq(regexProcessed.get(0).toString)
+  it should "udfStrReplace: replace string formatted doubles to sequence of doubles" in {
+    strReplace(soFar) shouldBe IndexedSeq(-0.3, 1.0, 0.5, 0.5, -0.3, 1.0, 1.0, 1.0, 1.0, 1.0)
   }
 
 

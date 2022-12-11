@@ -5,31 +5,35 @@ import spray.json.DefaultJsonProtocol
 import scala.util._
 
 
-case class Tweet(created_at: String,date: String, user: User, tweet: String)
-
-case class User(username: String)
-
-case class Response(wordles: List[Tweet])
 
 
-object TweetProtocol extends DefaultJsonProtocol {
-  implicit val formatUser = jsonFormat1(User.apply)
-  implicit val formatTweet = jsonFormat4(Tweet.apply)
-  implicit val formatResponse = jsonFormat1(Response.apply)
+case class Tweet(created_at: Long,date: String, username: String, tweet: String)
+
+//case class User(name: String)
+
+case class Result(wordleTweets: List[Tweet])
+
+//case class TweetList(tweet: List[Tweet])
+
+
+object Tweets extends DefaultJsonProtocol {
+//  implicit val formattedTweetList = jsonFormat1(TweetList.apply)
+  implicit val formattedTweet = jsonFormat4(Tweet.apply)
+  implicit val formattedResponse = jsonFormat1(Result.apply)
 }
 
-object Response {
+object Result {
   import spray.json._
 
-  trait IngestibleResponse extends Ingestible[Response] {
+  trait IngestibleResult extends Ingestible[Result] {
 
-    def fromString(w: String): Try[Response] = {
-      import TweetProtocol._
-      Try(w.parseJson.convertTo[Response])
+    def fromString(w: String): Try[Result] = {
+      import Tweets._
+      Try(w.parseJson.convertTo[Result])
     }
   }
 
-  implicit object IngestibleResponse extends IngestibleResponse
+  implicit object IngestibleResult extends IngestibleResult
 
 }
 
@@ -40,7 +44,7 @@ object Tweet {
   trait IngestibleTweet extends Ingestible[Tweet] {
 
     def fromString(w: String): Try[Tweet] = {
-      import TweetProtocol._
+      import Tweets._
       Try(w.parseJson.convertTo[Tweet])
     }
   }
@@ -48,3 +52,18 @@ object Tweet {
   implicit object IngestibleTweet extends IngestibleTweet
 
 }
+
+//object TweetList {
+//  import spray.json._
+//
+//  trait IngestibleTweetList extends Ingestible[TweetList] {
+//
+//    def fromString(w: String): Try[TweetList] = {
+//      import Tweets._
+//      Try(w.parseJson.convertTo[TweetList])
+//    }
+//  }
+//
+//  implicit object IngestibleTweetList extends IngestibleTweetList
+//
+//}
