@@ -9,11 +9,9 @@ import scala.util._
 
 case class Tweet(created_at: Long,date: String, username: String, tweet: String)
 
-//case class User(name: String)
 
 case class Result(wordleTweets: List[Tweet])
 
-//case class TweetList(tweet: List[Tweet])
 
 
 object Tweets extends DefaultJsonProtocol {
@@ -52,18 +50,3 @@ object Tweet {
   implicit object IngestibleTweet extends IngestibleTweet
 
 }
-
-//object TweetList {
-//  import spray.json._
-//
-//  trait IngestibleTweetList extends Ingestible[TweetList] {
-//
-//    def fromString(w: String): Try[TweetList] = {
-//      import Tweets._
-//      Try(w.parseJson.convertTo[TweetList])
-//    }
-//  }
-//
-//  implicit object IngestibleTweetList extends IngestibleTweetList
-//
-//}
