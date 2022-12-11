@@ -8,7 +8,7 @@ import numpy
 import time
 from datetime import datetime, timedelta
 nest_asyncio.apply()
-
+#setting a limit
 limit= 5
 
 def scrape():
